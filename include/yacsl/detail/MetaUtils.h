@@ -11,10 +11,10 @@ namespace meta
 
 /* for_each - tuple iteration */
 template<std::size_t I = 0, typename FuncT, typename... Ts>
-inline typename std::enable_if<I == sizeof...(Ts), void>::type for_each(std::tuple<Ts...> &, FuncT) {}
+inline typename std::enable_if<I == sizeof...(Ts), void>::type for_each(const std::tuple<Ts...>&, FuncT) {}
 
 template<std::size_t I = 0, typename FuncT, typename... Ts>
-inline typename std::enable_if<I < sizeof...(Ts), void>::type for_each(std::tuple<Ts...>& t, FuncT f)
+inline typename std::enable_if<I < sizeof...(Ts), void>::type for_each(const std::tuple<Ts...>& t, FuncT f)
 {
 	f(std::get<I>(t));
 	for_each<I + 1, FuncT, Ts...>(t, f);

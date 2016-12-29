@@ -30,6 +30,11 @@ public:
 		meta::for_each(fields_, [&obj, &name, &value](auto field) { if (field.name_ == name) { meta::push_back(obj, field.ptr_, value); }});
 	}
 
+	const std::tuple<FieldsTs...> getFields() const
+	{
+		return fields_;
+	}
+
 private:
 	std::tuple<FieldsTs...> fields_;
 };

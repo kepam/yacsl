@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include <yacsl/ObjectMapping.h>
+#include <yacsl/Serializer.h>
+#include <yacsl/protocol/JSON.h>
 
 struct SampleClass
 {
@@ -27,4 +29,21 @@ int main(int argc, char** argv)
 		.addField("s", &AnotherClass::s, sampleMapping)
 		.addField("data", &AnotherClass::data)
 		.getMapping();
+
+
+	rapidjson::StringBuffer s;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(s);
+
+	yacsl::protocol::JSON<decltype(writer)> protocol(writer);
+	auto serializer = yacsl::Serializer<SampleClass, decltype(sampleMapping), decltype(protocol)>(sampleMapping, protocol);
+
+	AnotherClass data;
+	data.s.x = 1;
+	data.s.y = 2;
+	data.s.value = 3;
+	data.data = "four";
+
+	serializer.serialize(data.s);
+
+	std::cout << s.GetString() << std::endl;
 }
