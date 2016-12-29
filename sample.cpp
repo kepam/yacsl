@@ -2,18 +2,29 @@
 
 #include <yacsl/ObjectMapping.h>
 
-struct Sample
+struct SampleClass
 {
 	int x;
 	int y;
 	double value;
 };
 
+struct AnotherClass
+{
+	SampleClass s;
+	std::string data;
+};
+
 int main(int argc, char** argv)
 {
-	auto mapping = yacsl::MappingBuilder<Sample>()
-		.addField("x", &Sample::x)
-		.addField("y", &Sample::y)
-		.addField("value", &Sample::value)
+	auto sampleMapping = yacsl::MappingBuilder<SampleClass>()
+		.addField("x", &SampleClass::x)
+		.addField("y", &SampleClass::y)
+		.addField("value", &SampleClass::value)
+		.getMapping();
+
+	auto anotherMapping = yacsl::MappingBuilder<AnotherClass>()
+		.addField("s", &AnotherClass::s, sampleMapping)
+		.addField("data", &AnotherClass::data)
 		.getMapping();
 }
