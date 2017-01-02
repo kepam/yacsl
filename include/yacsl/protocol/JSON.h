@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 #include <rapidjson/prettywriter.h>
 
@@ -25,11 +26,27 @@ public:
 		writer_.EndObject();
 	}
 
-	template<class T>
-	void serialize(const std::string& name, const T& value)
+	template<class T, class MappingT>
+	typename std::enable_if<std::is_same<MappingT, std::nullptr_t>::value, void>::type
+   	serialize(const std::string& name, const T& value, MappingT = nullptr)
 	{
 		writer_.Key(name.c_str());	
 		serialize(value);
+	}
+
+	template<class T, class MappingT>
+	typename std::enable_if<!std::is_same<MappingT, std::nullptr_t>::value, void>::type
+	serialize(const std::string& name, const T& object, MappingT mapping)
+	{
+		writer_.Key(name.c_str());	
+		startObject();
+		meta::for_each(mapping.getFields(), [&object, this](auto field)
+				{
+					const auto& value = object.*field.getPointer();
+					serialize(field.getName(), value, field.getMapping());
+				}
+		);
+		endObject();
 	}
 
 	void serialize(int32_t value)

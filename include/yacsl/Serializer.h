@@ -17,7 +17,7 @@ public:
 		meta::for_each(mapping_.getFields(), [&object, this](auto field)
 				{
 					const auto& value = object.*field.getPointer();
-					protocol_.serialize(field.getName(), value);
+					protocol_.serialize(field.getName(), value, field.getMapping());
 				}
 		);
 		protocol_.endObject();

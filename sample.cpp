@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(s);
 
 	yacsl::protocol::JSON<decltype(writer)> protocol(writer);
-	auto serializer = yacsl::Serializer<SampleClass, decltype(sampleMapping), decltype(protocol)>(sampleMapping, protocol);
+	auto serializer = yacsl::Serializer<AnotherClass, decltype(anotherMapping), decltype(protocol)>(anotherMapping, protocol);
 
 	AnotherClass data;
 	data.s.x = 1;
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 	data.s.value = 3;
 	data.data = "four";
 
-	serializer.serialize(data.s);
+	serializer.serialize(data);
 
 	std::cout << s.GetString() << std::endl;
 }
